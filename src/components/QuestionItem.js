@@ -1,25 +1,44 @@
-import React from "react";
+import React from 'react';
 
-function QuestionItem({ question }) {
+const QuestionItem = ({ question, onUpdateCorrectAnswer, onDeleteQuestion }) => {
   const { id, prompt, answers, correctIndex } = question;
 
-  const options = answers.map((answer, index) => (
-    <option key={index} value={index}>
-      {answer}
-    </option>
-  ));
+  const handleChangeCorrectAnswer = (e) => {
+    const updatedCorrectIndex = parseInt(e.target.value, 10);
+    onUpdateCorrectAnswer(id, updatedCorrectIndex);
+  };
+
+  const handleDelete = () => {
+    onDeleteQuestion(id);
+  };
 
   return (
-    <li>
-      <h4>Question {id}</h4>
-      <h5>Prompt: {prompt}</h5>
-      <label>
+    <div data-testid={`question-${id}`}>
+      <h4 data-testid={`question-prompt-${id}`}>{prompt}</h4>
+      <label htmlFor={`correct-answer-select-${id}`}>
         Correct Answer:
-        <select defaultValue={correctIndex}>{options}</select>
       </label>
-      <button>Delete Question</button>
-    </li>
+      <select
+        id={`correct-answer-select-${id}`}
+        value={correctIndex}
+        onChange={handleChangeCorrectAnswer}
+        data-testid={`correct-select-${id}`}
+      >
+        {answers.map((answer, index) => (
+          <option key={index} value={index}>
+            {answer}
+          </option>
+        ))}
+      </select>
+      <button
+        type="button"
+        onClick={handleDelete}
+        data-testid={`delete-button-${id}`}
+      >
+        Delete Question
+      </button>
+    </div>
   );
-}
+};
 
 export default QuestionItem;
